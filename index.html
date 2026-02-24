@@ -1,0 +1,79 @@
+<!--
+********************************************************
+ Copyright (c) 2026 Musab Sarier & Herman Bilokonenko.
+ All rights reserved.
+********************************************************
+-->
+
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Quiz ETML - Gagnez des produits !</title>
+    <script src="assets/js/kiosk.js"></script>
+    <link rel="icon" type="image/x-icon" href="assets/image/logo.jfif">
+    <link rel="stylesheet" href="assets/css/html.css?v=1.1">
+</head>
+
+<body>
+    <div id="vanta-bg"></div>
+
+    <!-- Bouton Admin -->
+    <a href="html/login.html" class="admin-link">Admin</a>
+
+    <div class="quiz">
+        <img src="assets/image/logo.png" alt="logo">
+        <h1 id="game-title">QUIZ ETML</h1>
+
+        <!-- Bouton Jeux (Buraya taşındı) -->
+        <button class="btn" id="games-btn" style="margin: 10px 0 20px 0; width: 100%; text-align: center;"
+            onclick="window.location.href='game/game_menu.html'">Jeux</button>
+
+        <!-- Sélection des Produits -->
+        <div id="product-selection">
+            <!-- La liste est générée par JS -->
+            <div id="product-list"></div>
+        </div>
+
+        <!-- Interface du Quiz (cachée par défaut) -->
+        <div id="quiz-interface" style="display: none;">
+            <div class="questions">
+                <h2 id="question">Questions here</h2>
+                <div id="answer-buttons">
+
+                </div>
+                <button id="next-btn">Suivant</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts pour l'animation de fond -->
+    <script src="assets/js/three.r134.min.js"></script>
+    <script src="assets/js/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x800080,
+            points: 16,
+            maxDistance: 20,
+            spacing: 17
+        })
+    </script>
+
+    <!-- Scripts de logique -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>

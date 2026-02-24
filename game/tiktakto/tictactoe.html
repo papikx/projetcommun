@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="tictactoe.CSS?v=1.1">
+    <script src="../../assets/js/kiosk.js"></script>
+</head>
+
+<body>
+
+    <div class="game">
+        <h1>Tic Tac Toe</h1>
+
+        <div class="board" id="board">
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+        </div>
+
+        <div id="status">Tour du joueur 1</div>
+        <button onclick="resetGame()">Recommencer</button>
+        <button onclick="window.location.href='../game_menu.html'">Retour au menu</button>
+    </div>
+
+    <script src="tictactoe.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" , content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird</title>
+    <link rel="icon" type="image/" href="flappy.png">
+    <link rel="stylesheet" href="flappybird.css">
+    <script src="flappybird.js"></script>
+    <script src="../../assets/js/kiosk.js"></script>
+</head>
+
+<body id="vanta-background">
+    <div class="main-container">
+        <div class="game-container">
+            <canvas id="board"></canvas>
+            <div id="gameOverOverlay" class="hidden">
+                <div class="overlay-content">
+                    <h2 class="glitch-text" data-text="GAME OVER">GAME OVER</h2>
+                    <div class="final-score-block">
+                        <span class="label-text">Final Score</span>
+                        <div id="finalScore" class="value-text">0</div>
+                    </div>
+                    <button id="retryBtn">TRY AGAIN</button>
+                </div>
+            </div>
+        </div>
+        <aside id="gameInfo">
+            <div class="hud-block">
+                <div class="label-text">Best Score</div>
+                <div id="bestScore" class="value-text">0</div>
+            </div>
+            <div class="hud-block">
+                <div class="label-text">Score</div>
+                <div id="scoreVal" class="value-text">0</div>
+            </div>
+            <div id="hud-controls">
+                <button id="startBtn">Start Game</button>
+                <button id="menuBtn" class="secondary">Main Menu</button>
+            </div>
+        </aside>
+    </div>
+    <script src="./three.r134.min.js"></script>
+    <script src="./vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-background",
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x800080,
+            points: 16,
+            maxDistance: 20,
+            spacing: 17
+        });
+    </script>
+</body>
+
+</html>

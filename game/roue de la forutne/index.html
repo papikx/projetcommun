@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roue de la Fortune</title>
+    <link rel="icon" type="image/" href="../../assets/image/roulette.png">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="main-container">
+        <a href="https://www.etml.ch" target="_blank" class="logo-link">
+            <img src="https://www.bernracingteam.ch/wp-content/uploads/2019/01/etml-sigle-2023-bleu@4x-8.png"
+                alt="Logo ETML" class="etml-logo">
+        </a>
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel"></div>
+        </div>
+        <button id="spinBtn">Lancer la roue</button>
+        <button id="adminBtn" class="admin-btn"> Admin</button>
+        <button id="menuBtn" class="menu-btn" onclick="window.location.href='../game_menu.html'">Retour au menu</button>
+
+        <div id="adminPanel" class="admin-panel hidden">
+            <h3>Modifier les lots</h3>
+            <div id="prizesListContainer" class="prizes-list-container">
+                <!-- Dynamic inputs will be here -->
+            </div>
+            <button id="addPrizeBtn" class="add-btn">+ Ajouter un lot</button>
+            <div class="admin-controls">
+                <button id="saveBtn" class="save-btn">Sauvegarder</button>
+                <button id="cancelBtn" class="cancel-btn">Annuler</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

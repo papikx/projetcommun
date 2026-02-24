@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; img-src 'self' data: https://*.google.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline';">
+    <title>Admin - Quiz ETML</title>
+    <script>
+        // KIOSK & SECURITY SCRIPT
+        document.addEventListener("DOMContentLoaded", () => {
+            // Disable Pinch Zoom (Mobile)
+            document.addEventListener('touchmove', function (event) {
+                if (event.scale !== 1) { event.preventDefault(); }
+            }, { passive: false });
+
+            // Disable Double Tap Zoom (Mobile)
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+            // Disable Ctrl+Wheel Zoom (Desktop)
+            document.addEventListener('wheel', function (e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        });
+
+        // Right-Click to toggle Fullscreen (Replaces context menu disable)
+        document.addEventListener("contextmenu", e => {
+            e.preventDefault();
+            toggleFullScreen();
+        }, false);
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener("keydown", e => {
+            // BLOCK ZOOM KEYS (Ctrl + / Ctrl - / Ctrl 0)
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=' || e.keyCode === 187 || e.keyCode === 189)) {
+                e.preventDefault();
+                return;
+            }
+
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if (e.keyCode === 123 ||
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                (e.ctrlKey && e.keyCode === 85)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // CRITICAL SESSION CHECK - Must be in head to run before content renders
+        (function () {
+            try {
+                if (sessionStorage.getItem('isAdmin') !== 'true') {
+                    // Redirect immediately
+                    window.location.replace('login.html');
+                } else {
+                    // Authorized
+                }
+            } catch (e) {
+                window.location.replace('login.html');
+            }
+        })();
+    </script>
+    <style>
+        /* Anti-FOUC (Flash of Unstyled Content) protection if JS is slow */
+        body {
+            display: none;
+        }
+    </style>
+    <script>
+        // Reveal body if authorized (runs after the check above passes)
+        document.addEventListener("DOMContentLoaded", function () {
+            if (sessionStorage.getItem('isAdmin') === 'true') {
+                document.body.style.display = 'flex'; // Restore display
+            }
+        });
+    </script>
+
+    <link rel="icon" type="image/x-icon" href="../logo1.jfif">
+    <link rel="stylesheet" href="../assets/css/html.css">
+    <style>
+        /* Styles spécifiques pour l'admin encapsulés si besoin, mais utilisant html.css principalement */
+        /* Styles spécifiques pour l'admin encapsulés */
+        .admin-panel {
+            display: block;
+            /* Visible par defaut car protégé par session */
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Optimization: Override .quiz to allow scrolling on small screens/large content */
+        .quiz {
+            position: relative !important;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            /* Custom Scrollbar for Premium Feel */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+        }
+
+        .quiz::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .quiz::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .quiz::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .quiz::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-panel {
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .question-list {
+            /* max-height: 400px; REMOVED for single scrollbar UX */
+            /* overflow-y: auto; REMOVED */
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .question-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            width: auto;
+            margin: 0;
+        }
+
+        .add-form {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        h3 {
+            margin: 10px 0;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background-color: transparent;
+            border: 1px solid white;
+            margin-bottom: 20px;
+            width: auto;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="vanta-bg"></div>
+    <div class="quiz">
+        <img src="../assets/images/logo.png" alt="logo" style="width: 100px; display: block; margin: 0 auto;">
+        <h1>ADMINISTRATION</h1>
+
+        <!-- Panneau de Connexion (Supprimé - voir login.html) -->
+
+        <!-- Panneau de Gestion (Admin Dashboard) -->
+        <div id="admin-panel" class="admin-panel">
+            <button class="btn back-btn" onclick="logout()">Déconnexion</button>
+
+            <h3>Ajouter une question</h3>
+            <div class="add-form">
+                <div class="form-group">
+                    <label>Question :</label>
+                    <input type="text" id="new-question" placeholder="La question...">
+                </div>
+                <div class="form-group">
+                    <label>Réponse 1 (Correcte ?) <input type="radio" name="correct-answer" value="0"></label>
+                    <input type="text" class="new-answer" placeholder="Réponse 1">
+                </div>
+                <div class="form-group">
+                    <label>Réponse 2 (Correcte ?) <input type="radio" name="correct-answer" value="1"></label>
+                    <input type="text" class="new-answer" placeholder="Réponse 2">
+                </div>
+                <div class="form-group">
+                    <label>Réponse 3 (Correcte ?) <input type="radio" name="correct-answer" value="2"></label>
+                    <input type="text" class="new-answer" placeholder="Réponse 3">
+                </div>
+                <div class="form-group">
+                    <label>Réponse 4 (Correcte ?) <input type="radio" name="correct-answer" value="3"></label>
+                    <input type="text" class="new-answer" placeholder="Réponse 4">
+                </div>
+                <button class="btn" onclick="addQuestion()">Ajouter la question</button>
+            </div>
+
+            <h3>Questions Existantes</h3>
+            <div id="questions-container" class="question-list">
+                <!-- La liste sera générée ici -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts pour l'animation de fond -->
+    <script src="../assets/js/three.r134.min.js"></script>
+    <script src="../assets/js/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x800080,
+            points: 16,
+            maxDistance: 20,
+            spacing: 17
+        })
+    </script>
+
+    <!-- Script de logique -->
+    <script src="../assets/js/data.js"></script>
+    <script>
+            // ENCAPSULATION & SÉCURITÉ
+            // Tout le code est enfermé dans une IIFE (Immediately Invoked Function Expression)
+            // pour empêcher l'accès aux variables depuis la console du navigateur.
+            (function () {
+                "use strict";
+
+                // VÉRIFICATION DE SESSION (Déplacé dans le head pour la sécurité)
+                // if (sessionStorage.getItem('isAdmin') !== 'true') ... 
+
+
+                // Initial rendering
+                window.addEventListener('load', renderQuestions);
+
+                window.logout = function () {
+                    sessionStorage.removeItem('isAdmin');
+                    window.location.href = 'login.html';
+                };
+
+                // --- GESTION DES DONNÉES ET RENDU SÉCURISÉ (ANTI-XSS) ---
+
+                function renderQuestions() {
+                    if (typeof loadQuestions !== 'function') {
+                        console.error("loadQuestions non disponible. Vérifiez data.js.");
+                        return;
+                    }
+                    const list = loadQuestions();
+                    const container = document.getElementById('questions-container');
+                    container.innerHTML = ''; // Reset propre
+
+                    list.forEach((q, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'question-item';
+
+                        // SÉCURITÉ XSS : Utilisation de `textContent` ou `innerText`
+                        // Au lieu d'injecter directement des chaînes HTML qui pourraient contenir des scripts.
+
+                        const textSpan = document.createElement('span');
+                        textSpan.style.color = "white";
+                        textSpan.style.fontSize = "0.9em";
+                        textSpan.style.flex = "1";
+                        textSpan.textContent = q.question; // <-- ICI: Sanitization automatique
+
+                        const delBtn = document.createElement('button');
+                        delBtn.className = 'delete-btn';
+                        delBtn.textContent = 'X';
+                        delBtn.onclick = function () { deleteQuestion(index); }; // Closure safe
+
+                        div.appendChild(textSpan);
+                        div.appendChild(delBtn);
+                        container.appendChild(div);
+                    });
+                }
+
+                window.deleteQuestion = function (index) {
+                    if (confirm("Êtes-vous sûr de vouloir supprimer cette question ?")) {
+                        const list = loadQuestions();
+                        list.splice(index, 1);
+                        saveQuestions(list);
+                        renderQuestions();
+                    }
+                };
+
+                window.addQuestion = function () {
+                    const questionInput = document.getElementById('new-question');
+                    const answerInputs = document.querySelectorAll('.new-answer');
+                    const correctRadio = document.querySelector('input[name="correct-answer"]:checked');
+
+                    // Sanitization à l'entrée (Input Validation)
+                    const questionText = questionInput.value.trim();
+
+                    // Prévention Injection de base: vérifier les caractères très suspects (optionnel mais recommandé)
+                    if (questionText.includes("<script") || questionText.includes("javascript:")) {
+                        alert("Caractères interdits détectés !");
+                        return;
+                    }
+
+                    if (!questionText || !correctRadio) {
+                        alert("Veuillez remplir la question et sélectionner la bonne réponse.");
+                        return;
+                    }
+
+                    let allAnswersFilled = true;
+                    const finalAnswers = [];
+                    const correctIndex = parseInt(correctRadio.value);
+
+                    // Validation des réponses
+                    for (let i = 0; i < answerInputs.length; i++) {
+                        const ansText = answerInputs[i].value.trim();
+                        if (!ansText) {
+                            allAnswersFilled = false;
+                            break;
+                        }
+                        if (ansText.includes("<script")) {
+                            alert("Réponse invalide détectée.");
+                            return;
+                        }
+                        finalAnswers.push({
+                            text: ansText, // Sera encodé/sanitized au moment de l'encodage JSON si nécessaire, mais géré ici comme raw text
+                            correct: i === correctIndex
+                        });
+                    }
+
+                    if (!allAnswersFilled) {
+                        alert("Veuillez remplir toutes les options de réponse.");
+                        return;
+                    }
+
+                    const newQuestion = {
+                        question: questionText,
+                        answers: finalAnswers
+                    };
+
+                    const list = loadQuestions();
+                    list.push(newQuestion);
+                    saveQuestions(list);
+
+                    // Reset forms
+                    questionInput.value = '';
+                    answerInputs.forEach(input => input.value = '');
+
+                    alert("Question ajoutée et sécurisée avec succès !");
+                    renderQuestions();
+                };
+
+            })();
+    </script>
+
+
+
+</body>
+
+</html>

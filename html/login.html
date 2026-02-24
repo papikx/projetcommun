@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Connexion Admin - Quiz ETML</title>
+    <!-- Use existing CSS -->
+    <link rel="stylesheet" href="../assets/css/html.css">
+    <link rel="icon" type="image/x-icon" href="../logo1.jfif">
+    <script>
+        // KIOSK MODE SCRIPT
+        document.addEventListener("DOMContentLoaded", () => {
+            // Disable Pinch Zoom (Mobile)
+            document.addEventListener('touchmove', function (event) {
+                if (event.scale !== 1) { event.preventDefault(); }
+            }, { passive: false });
+
+            // Disable Double Tap Zoom (Mobile)
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+            // Disable Ctrl+Wheel Zoom (Desktop)
+            document.addEventListener('wheel', function (e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        });
+
+        // Right-Click to toggle Fullscreen
+        document.addEventListener("contextmenu", e => {
+            e.preventDefault();
+            toggleFullScreen();
+        }, false);
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        document.addEventListener("keydown", e => {
+            // BLOCK ZOOM KEYS (Ctrl + / Ctrl - / Ctrl 0)
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=' || e.keyCode === 187 || e.keyCode === 189)) {
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+    <style>
+        /* Inherit body styles from html.css, but ensure no scroll if desired, 
+           though user asked for 'exactly like index', index allows scroll if needed but usually is fixed 
+           due to simple content. We'll leave specific login adjustments but match visual theme. */
+
+        /* Match .quiz style for the container */
+        .login-container {
+            /* Copied from .quiz in html.css */
+            background: hsl(0, 0%, 100%, 0.15);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            box-shadow: inset 0 0 8px 1px hsl(0, 0%, 100%, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+
+            /* Positioning logic (kept from login) */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            color: white;
+            /* Ensure text is white like index seems to imply with contrast */
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ffffff;
+            /* Match index text color */
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Update button to match theme more closely or keep as accent? 
+           Index uses .btn { background: #001e4d; ... } 
+           Login used a gradient. User said "hicbir tema degisikligi olmasin" (no theme changes). 
+           I should stick to the index theme if possible. 
+           Index uses .btn class in html.css. I should probably use that class instead of custom styles.
+           However, the previous login button had a gradient. 
+           "Login kisminda arka plan ve temayi tamamen ana sayfadaki gibi yap"
+           (Make background and theme in login part COMPLETELY like main page).
+           This implies using the same buttons/colors.
+        */
+
+        /* I will remove custom .btn styles here and let html.css handle it, 
+           or override slightly if needed for layout. */
+
+        .error-msg {
+            color: #ff6b6b;
+            /* Keep error red as it's functional */
+            margin-top: 15px;
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        h1 {
+            /* Match .quiz h1? */
+            font-size: 25px;
+            font-family: monospace;
+            color: #c4b6c7;
+            font-weight: 600;
+            border-bottom: 1px solid #333;
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="vanta-bg"></div>
+
+    <div class="login-container">
+        <img src="../logo.png" alt="logo" style="width: 80px; margin-bottom: 20px;">
+        <h1>Espace Admin</h1>
+
+        <div class="form-group">
+            <label for="username">Identifiant</label>
+            <input type="text" id="username" placeholder="Nom d'utilisateur">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" placeholder="Votre mot de passe">
+        </div>
+
+        <!-- Use 'btn' class from html.css directly, remove inline style override if possible or minimal -->
+        <button class="btn" onclick="attemptLogin()" style="width: 100%; margin-top: 10px; text-align: center;">Se
+            connecter</button>
+        <div id="error-msg" class="error-msg"></div>
+
+        <a href="../index.html"
+            style="color: rgba(255,255,255,0.7); display: block; margin-top: 25px; text-decoration: none; font-size: 0.9em;">
+            ← Retour à l'accueil
+        </a>
+    </div>
+
+    <!-- Background Scripts -->
+    <script src="../assets/js/three.r134.min.js"></script>
+    <script src="../assets/js/vanta.net.min.js"></script>
+    <script>
+        // Exact copy of config from index.html
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x800080,
+            points: 16,
+            maxDistance: 20,
+            spacing: 17
+        })
+    </script>
+
+    <!-- Login Logic -->
+    <script>
+            (function () {
+                "use strict";
+
+                // RESET SECURITY STATE (For debugging/fixing user issue)
+                localStorage.removeItem('securityState');
+
+                // Security Config
+                const LOCKOUT_TIME = 60 * 1000;
+                const MAX_ATTEMPTS = 3;
+
+                function getSecurityState() {
+                    const state = localStorage.getItem('securityState');
+                    if (state) return JSON.parse(state);
+                    return { attempts: 0, lockoutEnd: 0 };
+                }
+
+                function updateSecurityState(attempts, lockoutEnd) {
+                    localStorage.setItem('securityState', JSON.stringify({ attempts, lockoutEnd }));
+                }
+
+                async function sha256(message) {
+                    const msgBuffer = new TextEncoder().encode(message);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                }
+
+                // Anti-Debug & Anti-RightClick
+                document.addEventListener("contextmenu", e => e.preventDefault());
+                document.addEventListener("keydown", e => {
+                    if (e.keyCode === 123 || // F12
+                        (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
+                        (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
+                        (e.ctrlKey && e.keyCode === 85)) { // Ctrl+U
+                        e.preventDefault();
+                    }
+                });
+
+                window.attemptLogin = async function () {
+                    const now = Date.now();
+                    const security = getSecurityState();
+                    const errorDiv = document.getElementById('error-msg');
+
+                    if (security.lockoutEnd > now) {
+                        const remaining = Math.ceil((security.lockoutEnd - now) / 1000);
+                        errorDiv.style.display = 'block';
+                        errorDiv.innerText = `Trop de tentatives. Attendez ${remaining}s.`;
+                        return;
+                    }
+
+                    const user = document.getElementById('username').value.trim().toLowerCase();
+                    const pass = document.getElementById('password').value.trim();
+
+                    if (!user || !pass) {
+                        errorDiv.style.display = 'block';
+                        errorDiv.innerText = "Veuillez remplir tous les champs.";
+                        return;
+                    }
+
+                    // Hashed Security Check
+                    const userHash = await sha256(user);
+                    const passHash = await sha256(pass);
+
+                    // Obfuscated Internal Configuration
+                    const _sysConfig = {
+                        _m1: "OGM2OTc2ZTViNTQxMDQxNWJkZTkwOGJkNGRlZTE1ZGZiMTY3YTljODczZmM0YmI4YTgxZjZmMmFiNDQ4YTkxOA==", // u
+                        _m2: "YmU1NGRiNGYyMDRjZDhmMWM2NWMzNzIwN2FhM2VhNjljMTJlNzY0MDgyNjhlMjM1YWM4OWYwNzk0YjM4NDliMA=="  // p
+                    };
+
+                    let loginSuccessful = false;
+
+                    try {
+                        // Try to use External Configuration first
+                        const response = await fetch('credentials.json?v=' + Date.now());
+                        if (!response.ok) throw new Error("JSON unavailable");
+
+                        const data = await response.json();
+                        const adminNode = data.access_nodes.find(n => n.id === 'node_25' && n.role === 'admin');
+
+                        if (adminNode && adminNode.access_hash === passHash && user === 'admin') {
+                            loginSuccessful = true;
+                        }
+                    } catch (e) {
+                        console.log("Checking internal system parameters...");
+                        // Decode obfuscated values for comparison
+                        try {
+                            const _val1 = atob(_sysConfig._m1);
+                            const _val2 = atob(_sysConfig._m2);
+
+                            if (userHash === _val1 && passHash === _val2) {
+                                loginSuccessful = true;
+                            }
+                        } catch (err) { /* Silent fail */ }
+                    }
+
+                    if (loginSuccessful) {
+                        updateSecurityState(0, 0);
+                        sessionStorage.setItem('isAdmin', 'true');
+                        window.location.href = 'admin.html';
+                    } else {
+                        security.attempts++;
+                        errorDiv.style.display = 'block';
+
+                        if (security.attempts >= MAX_ATTEMPTS) {
+                            security.lockoutEnd = now + LOCKOUT_TIME;
+                            errorDiv.innerText = `Bloqué pour 1 minute !`;
+                        } else {
+                            errorDiv.innerText = `Identifiants incorrects.`;
+                        }
+                        updateSecurityState(security.attempts, security.lockoutEnd);
+                    }
+                };
+
+                // Check if already logged in
+                if (sessionStorage.getItem('isAdmin') === 'true') {
+                    // Optional: redirect to admin if already logged in? 
+                    // window.location.href = 'admin.html';
+                    // User might want to login as different user, so maybe not auto-redirect.
+                }
+
+                // Keyboard support
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') attemptLogin();
+                });
+
+            })();
+    </script>
+</body>
+
+</html>

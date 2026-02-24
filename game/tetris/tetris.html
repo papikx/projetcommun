@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tétris - ETML</title>
+    <link rel="icon" type="image/" href="../../assets/image/tetris.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="tetris.css?v=1.1">
+    <script src="../../assets/js/kiosk.js"></script>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="game-container">
+            <canvas id="tetrisCanvas"></canvas>
+        </div>
+        <div id="gameInfo">
+            <div id="nextWrapper">
+                <div id="nextLabel">Next Block</div>
+                <canvas id="nextCanvas" width="120" height="120"></canvas>
+            </div>
+            <div id="beastscore">Best Score: 0</div>
+            <div id="score">Score: 0</div>
+            <button id="startButton" style="display: none;">Start</button>
+            <button id="restartButton" style="display: none;">Restart</button>
+            <button id="quitButton" style="display: none;">Quit</button>
+            <button id="menuButton" onclick="window.location.href='../game_menu.html'">Main Menu</button>
+        </div>
+    </div>
+    <script src="tetris.js"></script>
+    <script src="../../assets/js/three.r134.min.js"></script>
+    <script src="../../assets/js/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "body",
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x800080,
+            points: 16,
+            maxDistance: 20,
+            spacing: 17
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETML - Face-Off</title>
+    <link rel="icon" type="image/" href="../../assets/image/faceoff.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- VIDÉO DE FOND -->
+    <div id="video-background-container">
+        <video id="disco-bg" loop muted playsinline>
+            <source src="disco_background.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="etml-logo">
+                <span class="letter">E</span><span class="letter">T</span><span class="letter">M</span><span
+                    class="letter">L</span>
+                <div class="sub-text">LAUSANNE</div>
+            </div>
+            <h1>Face-Off Challenge ETML</h1>
+            <div class="stats">
+                <div class="stat">Score: <span id="score">0</span></div>
+                <div class="stat">Temps: <span id="timer">75</span>s</div>
+            </div>
+        </header>
+
+        <div id="instruction">Appuyez sur "Lancer le Jeu" et cliquez sur le bon visage !</div>
+
+        <div class="game-area">
+            <!-- La grille des visages sera créée ici par le JavaScript -->
+            <div class="game-board" id="gameGrid"></div>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn" class="btn btn-primary">Lancer le Jeu ! 🎶</button>
+            <button id="pauseBtn" class="btn btn-secondary" disabled>Pause</button>
+            <button onclick="window.location.href='../game_menu.html'" class="btn btn-secondary">Retour au menu</button>
+        </div>
+
+        <!-- Fenêtre de fin de partie -->
+        <div id="gameOverModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Fin de partie!</h2>
+                <p>Score Final: <strong id="finalScore">0</strong></p>
+                <div id="mistakesList"
+                    style="text-align: left; max-height: 200px; overflow-y: auto; margin: 10px 0; border-top: 1px solid #444; padding-top: 10px;">
+                </div>
+                <button onclick="location.reload()" class="btn btn-primary">Rejouer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="otarie.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Jeux ETML</title>
+    <link rel="icon" type="image/x-icon" href="../assets/image/logo.jfif">
+    <link rel="stylesheet" href="../assets/css/html.css?v=1.1">
+    <script src="../assets/js/kiosk.js"></script>
+</head>
+
+<body>
+    <div id="vanta-bg"></div>
+
+    <div class="quiz">
+        <img src="../assets/image/logo.png" alt="logo">
+        <h1 id="games-title">JEUX ETML</h1>
+
+        <div id="game-selection">
+            <h2 style="margin-top: 10px; margin-bottom: 15px;">Choisissez un jeu</h2>
+            <button class="btn" id="games-btn" style="margin: 10px 0 20px 0; width: 100%; text-align: center;"
+                onclick="window.location.href='../index.html'">Retour</button>
+
+            <div id="game-list">
+                <!-- Bloc Tetris -->
+                <div class="product-card" onclick="window.location.href='tetris/tetris.html'">
+                    <h3>Tetris</h3>
+                    <p>Version spéciale ETML du classique Tetris.</p>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='otarieGo/index.html'">
+                    <h3>Face-Off Challenge ETML</h3>
+                    <p>Version spéciale ETML du classique Face-Off Challenge.</p>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='roue de la forutne/index.html'">
+                    <h3>Roue de la fortune</h3>
+                    <p>Version spéciale ETML du classique Roue de la fortune.</p>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='Flappy Bird/index.html'">
+                    <h3>Flappy Bird</h3>
+                    <p>Version spéciale ETML du classique Flappy Bird.</p>
+                </div>
+
+                <div class="product-card" onclick="window.location.href='tiktakto/tictactoe.html'">
+                    <h3>Tic Tac Toe</h3>
+                    <p>Version spéciale ETML du classique tic tac toe.</p>
+                </div>
+
+                <!--
+                    Pour un nouveau jeu, kopyalayın ve düzenleyin:
+                    <div class="product-card" onclick="window.location.href='YENI_KLASOR/YENI_OYUN.html'">
+                        <h3>Nom du Jeu</h3>
+                        <p>Brève description du jeu.</p>
+                    </div>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts pour l'animation de fond (même configuration que index.html) -->
+    <script src="../assets/js/three.r134.min.js"></script>
+    <script src="../assets/js/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x800080,
+            points: 16,
+            maxDistance: 20,
+            spacing: 17
+        })
+    </script>
+</body>
+
+</html>
